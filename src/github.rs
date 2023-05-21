@@ -22,7 +22,7 @@ pub fn fetch_repo_list(username: &str) -> Result<(Vec<String>, Vec<String>), ure
             .call()?
             .into_json()?;
         
-        if response.len() == 0 {
+        if response.is_empty(){
             break;
         } else {
             for repo in response {

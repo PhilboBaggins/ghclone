@@ -1,17 +1,19 @@
+use std::io;
 use std::process::Command;
-use dialoguer::{theme::ColorfulTheme, Input, FuzzySelect};
+
+use dialoguer::{theme::ColorfulTheme, FuzzySelect, Input};
 
 mod github;
 use github::fetch_repo_list;
 
 fn main() -> Result<(), ureq::Error> {
-    // Ask user for Github username 
+    // Ask user for Github username
     let username = ask_for_username()?;
 
     // Fetch list of user's repositories
     println!("Fetching list of repositories for {}...", username);
     let (names, clone_urls) = fetch_repo_list(&username)?;
-    if names.len() == 0 {
+    if names.is_empty() {
         eprintln!("No repositories found!");
         return Ok(()); // TODO: Better way handle this?
     }
@@ -20,7 +22,7 @@ fn main() -> Result<(), ureq::Error> {
     let selection_index = FuzzySelect::with_theme(&ColorfulTheme::default())
         .with_prompt("Select repository")
         .default(0)
-        .items(&names[..])
+        .items(&names)
         .interact()?;
     let name = &names[selection_index];
     let clone_url = &clone_urls[selection_index];
@@ -43,7 +45,7 @@ fn main() -> Result<(), ureq::Error> {
     Ok(())
 }
 
-fn ask_for_username() -> Result<String, std::io::Error> {
+fn ask_for_username() -> Result<String, io::Error> {
     // TODO: Read list of previous usernames
     let prev_usernames = vec!["PhilboBaggins"];
 
@@ -52,22 +54,21 @@ fn ask_for_username() -> Result<String, std::io::Error> {
             Input::with_theme(&ColorfulTheme::default())
                 .with_prompt("Github username")
                 .interact_text()?
-                //.unwrap()
-        },
+        }
         1 => {
             let prev_username = *prev_usernames.first().unwrap();
             Input::with_theme(&ColorfulTheme::default())
                 .with_prompt("Github username")
                 .default(prev_username.to_string())
                 .interact_text()?
-        },
+        }
         _ => {
             // TODO: Present list of previous usernames and allow user select one or enter a new one
             prev_usernames.first().unwrap().to_string()
-        },
+        }
     };
-    
+
     // TODO: If `username` not in `prev_usernames` list; add it and save to config file
-    
+
     Ok(username)
 }
