@@ -18,8 +18,7 @@ fn main() -> Result<(), ureq::Error> {
         .with_prompt("Select repository")
         .default(0)
         .items(&names[..])
-        .interact()
-        .unwrap();
+        .interact()?;
     let name = &names[selection_index];
     let clone_url = &clone_urls[selection_index];
 
@@ -27,8 +26,7 @@ fn main() -> Result<(), ureq::Error> {
     let local_dir: String = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("Local path")
         .default(name.to_string())
-        .interact_text()
-        .unwrap();
+        .interact_text()?;
 
     // Git clone
     Command::new("git")
