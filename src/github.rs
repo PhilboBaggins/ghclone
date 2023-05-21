@@ -14,15 +14,18 @@ pub fn fetch_repo_list(username: &str) -> Result<(Vec<String>, Vec<String>), ure
     let mut page_num = 1;
 
     loop {
-        let url = format!("https://api.github.com/users/{}/repos?per_page={}&page={}", username, MAX_REPOS_PER_PAGE, page_num);
+        let url = format!(
+            "https://api.github.com/users/{}/repos?per_page={}&page={}",
+            username, MAX_REPOS_PER_PAGE, page_num
+        );
         //println!("GET {}", url);
 
         let response: Vec<RepoApiResponse> = ureq::get(&url)
             .set("Accept", "application/vnd.github.v3+json")
             .call()?
             .into_json()?;
-        
-        if response.is_empty(){
+
+        if response.is_empty() {
             break;
         } else {
             for repo in response {
