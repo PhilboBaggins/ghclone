@@ -8,8 +8,9 @@ pub struct RepoApiResponse {
     pub clone_url: String,
 }
 
-pub fn fetch_repo_list(username: &str) -> Result<Vec<RepoApiResponse>, ureq::Error> {
-    let mut all_repos = Vec::new();
+pub fn fetch_repo_list(username: &str) -> Result<(Vec<String>, Vec<String>), ureq::Error> {
+    let mut names = Vec::new();
+    let mut clone_urls = Vec::new();
     let mut page_num = 1;
 
     loop {
@@ -25,12 +26,13 @@ pub fn fetch_repo_list(username: &str) -> Result<Vec<RepoApiResponse>, ureq::Err
             break;
         } else {
             for repo in response {
-                all_repos.push(repo);
+                names.push(repo.name);
+                clone_urls.push(repo.clone_url);
             }
         }
 
         page_num += 1;
     }
 
-    Ok(all_repos)
+    Ok((names, clone_urls))
 }
