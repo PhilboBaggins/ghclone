@@ -16,8 +16,8 @@ pub fn fetch_repo_list(username: &str) -> Result<Vec<RepoApiResponse>, ureq::Err
         let url = format!("https://api.github.com/users/{}/repos?per_page={}&page={}", username, MAX_REPOS_PER_PAGE, page_num);
         //println!("GET {}", url);
 
-        // TODO: Set accept header - "Accept: application/vnd.github.v3+json"
         let response: Vec<RepoApiResponse> = ureq::get(&url)
+            .set("Accept", "application/vnd.github.v3+json")
             .call()?
             .into_json()?;
         
