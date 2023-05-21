@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 dialoguer = "0.10.4"
+serde = { version = "1.0.163", features = ["derive"] }
+ureq = { version = "2.6.2", features = ["json"] }
