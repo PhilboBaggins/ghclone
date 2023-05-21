@@ -11,6 +11,10 @@ fn main() -> Result<(), ureq::Error> {
     // Fetch list of user's repositories
     println!("Fetching list of repositories for {}...", username);
     let (names, clone_urls) = fetch_repo_list(&username)?;
+    if names.len() == 0 {
+        eprintln!("No repositories found!");
+        return Ok(()); // TODO: Better way handle this?
+    }
 
     // Select repository
     let selection_index = FuzzySelect::with_theme(&ColorfulTheme::default())
